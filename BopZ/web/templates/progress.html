@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BopZ — Escaneando...</title>
+<style>
+:root{--bg:#090E1A;--card:#111827;--border:#1F2D45;--text:#D9E2F0;--muted:#5C6E87;--accent:#F0A340;--green:#4EBE96;--red:#E05C6F;--font:'Share Tech Mono','Courier New',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.logo{font-size:28px;letter-spacing:3px;color:var(--accent);margin-bottom:32px}
+.terminal{background:#07111E;border:1px solid var(--border);border-radius:10px;width:100%;max-width:700px;min-height:300px;max-height:60vh;overflow-y:auto;padding:20px;font-size:13px;line-height:1.7}
+.terminal .line{opacity:0;animation:fadein .15s forwards}
+@keyframes fadein{to{opacity:1}}
+.line.done{color:var(--green)}
+.line.error{color:var(--red)}
+.line.info{color:var(--muted)}
+.spinner{display:inline-block;animation:spin 1s linear infinite;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status-bar{margin-top:20px;font-size:13px;color:var(--muted)}
+.btn-report{display:none;margin-top:24px;background:var(--green);color:#07111E;border:none;border-radius:7px;padding:12px 32px;font-family:var(--font);font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:1px;text-decoration:none}
+.btn-report:hover{opacity:.88}
+</style>
+</head>
+<body>
+<div class="logo">&gt; BopZ_</div>
+<div class="terminal" id="log"></div>
+<div class="status-bar" id="status"><span class="spinner">⟳</span> Escaneo en curso...</div>
+<a class="btn-report" id="btn-report" href="/report/{{ scan_id }}">VER REPORTE COMPLETO →</a>
+
+<script>
+const log = document.getElementById('log');
+const status = document.getElementById('status');
+const btn = document.getElementById('btn-report');
+const scanId = "{{ scan_id }}";
+const es = new EventSource('/stream/' + scanId);
+
+es.onmessage = function(e){
+  const line = document.createElement('div');
+  line.className = 'line';
+  const txt = e.data || '';
+  if(txt.includes('[ERROR]')) line.classList.add('error');
+  else if(txt.includes('finalizado') || txt.includes('✅') || txt.includes('completo')) line.classList.add('done');
+  else if(txt.includes('hallazgo')) line.classList.add('done');
+  else line.classList.add('info');
+  line.textContent = '$ ' + txt;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+};
+
+es.addEventListener('status', function(e){
+  es.close();
+  if(e.data === 'done'){
+    status.innerHTML = '✅ Escaneo completado.';
+    btn.style.display = 'inline-block';
+  } else {
+    status.innerHTML = '❌ Escaneo terminó con error. Revisa los logs.';
+    status.style.color = 'var(--red)';
+  }
+});
+
+es.onerror = function(){
+  es.close();
+  status.textContent = '⚠ Conexión perdida con el servidor.';
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# BopZ — dependencias
+# Instalar con: pip install -r requirements.txt
+
+# HTTP y crawling
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# Templates del reporte
+jinja2>=3.1.2
+
+# Dashboard web
+flask>=3.0.0
+
+# Descodificación de cookies Flask (check de secret_key)
+# Se usa la misma versión de Flask que ya está arriba como
+# entorno de emulación — no requiere instalación extra.
+# itsdangerous>=2.1.0  # dependencia transitiva de flask
+
+# Agente IA (opcional — si no se instala, el modo --ai queda
+# deshabilitado pero el resto del scanner funciona igual)
+anthropic>=0.25.0
+
+# Hashing y utilidades — ya en stdlib de Python 3.9+
+# hashlib, secrets, uuid, threading, queue, time, argparse, dataclasses

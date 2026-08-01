@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BopZ — Bot of Pentesting by Zequi</title>
+<style>
+:root{--bg:#090E1A;--card:#111827;--border:#1F2D45;--text:#D9E2F0;--muted:#5C6E87;--accent:#F0A340;--green:#4EBE96;--red:#E05C6F;--font:'Share Tech Mono','Courier New',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.logo{font-size:clamp(22px,4vw,36px);letter-spacing:3px;color:var(--accent);margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:36px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px 32px;width:100%;max-width:560px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.field input[type=text],.field input[type=number],.field input[type=password]{width:100%;background:#07111E;border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:14px;transition:border .15s}
+.field input:focus{outline:none;border-color:var(--accent)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.toggle input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.toggle label{font-size:13px;color:var(--text);cursor:pointer}
+.btn{width:100%;background:var(--accent);color:#0B0E14;border:none;border-radius:7px;padding:13px;font-family:var(--font);font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:1px;transition:opacity .15s;margin-top:8px}
+.btn:hover{opacity:.88}
+.warn{background:#1A0D0B;border:1px solid #4A2020;border-radius:7px;padding:12px 14px;font-size:12.5px;color:#C08080;margin-bottom:20px;line-height:1.6}
+.warn strong{color:var(--red)}
+footer{margin-top:28px;color:var(--muted);font-size:12px;text-align:center}
+.tag{display:inline-block;background:#0E1E32;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;margin:2px}
+</style>
+</head>
+<body>
+<div class="logo">&gt; BopZ_</div>
+<div class="sub">Bot of Pentesting by Zequi · v1.0.0</div>
+
+<div class="card">
+  <h2>⚙ Configurar escaneo</h2>
+  <div class="warn">
+    <strong>Aviso de uso responsable:</strong> BopZ lanza payloads activos (SQLi, XSS, forjado de sesión) contra el objetivo. Úsalo <strong>únicamente</strong> contra aplicaciones que sean de tu propiedad o donde tengas autorización explícita y por escrito.
+  </div>
+
+  <form method="POST" action="/scan">
+    <div class="field">
+      <label>URL objetivo</label>
+      <input type="text" name="target" placeholder="http://localhost:5001" required>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Profundidad crawler</label>
+        <input type="number" name="depth" value="2" min="1" max="5">
+      </div>
+      <div class="field">
+        <label>Máx. páginas</label>
+        <input type="number" name="max_pages" value="60" min="5" max="200">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Delay entre requests (s)</label>
+        <input type="number" name="delay" value="0.2" min="0" max="5" step="0.1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Repositorio de código fuente (opcional — activa SAST + SCA)</label>
+      <input type="text" name="repo" placeholder="https://github.com/usuario/repo  o  /ruta/local">
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">
+        Si se especifica, BopZ clona el repo y busca secretos hardcodeados
+        + dependencias con CVE (OSV.dev) antes del escaneo DAST.
+      </div>
+    </div>
+    <div class="field" id="branch-field" style="display:none">
+      <label>Rama (branch) a clonar</label>
+      <input type="text" name="branch" placeholder="main">
+    </div>
+
+    <div class="toggle">
+      <input type="checkbox" id="ai" name="enable_ai" value="1">
+      <label for="ai">Análisis con IA (Claude API)</label>
+    </div>
+    <div class="toggle">
+      <input type="checkbox" id="ws" name="web_search" value="1">
+      <label for="ws">Búsqueda web del agente (enriquece hallazgos críticos)</label>
+    </div>
+
+    <div class="field" id="api-key-field" style="display:none">
+      <label>Anthropic API Key (si no está en variable de entorno)</label>
+      <input type="password" name="api_key" placeholder="sk-ant-...">
+    </div>
+
+    <button type="submit" class="btn">▶ INICIAR ESCANEO</button>
+  </form>
+</div>
+
+<footer>
+  Checks disponibles:
+  <span class="tag">SQLi</span><span class="tag">XSS Reflejado</span>
+  <span class="tag">XSS Almacenado</span><span class="tag">CSRF</span>
+  <span class="tag">Headers HTTP</span><span class="tag">Cookie Flags</span>
+  <span class="tag">Session Forgery</span>
+</footer>
+
+<script>
+document.getElementById('ai').addEventListener('change',function(){
+  document.getElementById('api-key-field').style.display = this.checked ? 'block' : 'none';
+});
+document.querySelector('input[name="repo"]').addEventListener('input', function(){
+  const isGithub = this.value.includes('github.com');
+  document.getElementById('branch-field').style.display = isGithub ? 'block' : 'none';
+});
+</script>
+</body>
+</html>

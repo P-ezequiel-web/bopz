@@ -1,0 +1,72 @@
+version: "3.9"
+
+# ── Variables ────────────────────────────────────────────────────────────────
+x-bopz-env: &bopz-env
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  BOPZ_MODEL: ${BOPZ_MODEL:-claude-sonnet-4-6}
+
+services:
+
+  # ── Objetivo de demo: ShopMart (tu app vulnerable) ───────────────────────
+  # Sustituye la imagen por la tuya o elimina este servicio si ya tienes
+  # la app corriendo en el host (http://host.docker.internal:5001)
+  shopmart:
+    image: shopmart:latest        # construir con: docker build -t shopmart:latest .
+    container_name: shopmart-lab
+    ports:
+      - "5001:5000"
+    networks:
+      - bopznet
+    profiles: ["demo"]            # solo se levanta con --profile demo
+
+  # ── Dashboard web ─────────────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bopz-web
+    command: ["web/app.py"]
+    ports:
+      - "8090:8090"
+    environment:
+      <<: *bopz-env
+    volumes:
+      - ./reports:/reports
+    networks:
+      - bopznet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # permite alcanzar localhost del host
+    profiles: ["web"]
+
+  # ── CLI (escaneo único, se destruye al terminar) ──────────────────────────
+  cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bopz-cli
+    command:
+      - main.py
+      - ${BOPZ_TARGET:-http://shopmart-lab:5000}
+      - --yes
+      - --output-prefix
+      - /reports/bopz-report
+    environment:
+      <<: *bopz-env
+    volumes:
+      - ./reports:/reports
+    networks:
+      - bopznet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    profiles: ["cli"]
+    depends_on:
+      shopmart:
+        condition: service_started
+        required: false
+
+networks:
+  bopznet:
+    driver: bridge
+
+volumes:
+  reports:
