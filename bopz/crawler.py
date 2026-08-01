@@ -1,10 +1,4 @@
 """Crawler same-origin: construye el mapa del sitio que consumen los checks.
-
-Deliberadamente simple (BFS, sin JS rendering) porque el objetivo del
-laboratorio son apps server-rendered como ShopMart/Flask. Se mantiene
-siempre dentro del mismo host (same-origin) tanto por corrección técnica
-como por seguridad: un link de footer hacia un dominio real de terceros
-nunca debe terminar recibiendo payloads de BopZ.
 """
 from __future__ import annotations
 
