@@ -38,13 +38,13 @@ python main.py http://localhost:5001 --ai --web-search
 ### CLI — con URL de GitHub
 ```bash
 python main.py http://localhost:5001 \
-  --repo https://github.com/tu-usuario/shopmart
+  --repo https://github.com/tu-usuario/repo
 ```
 
 ### CLI — con path local (más rápido, sin clonar)
 ```bash
 python main.py http://localhost:5001 \
-  --repo /ruta/local/a/shopmart
+  --repo /ruta/local/a/tu_proyecto
 ```
 
 ### CLI — cruzando con reportes del pipeline de CI/CD
@@ -59,7 +59,7 @@ python main.py http://localhost:5001 \
 ### CLI — Todo junto — el combo completo
 ```bash
 python main.py http://localhost:5001 \
-  --repo https://github.com/tu-usuario/shopmart \
+  --repo https://github.com/tu-usuario/repo \
   --ai \
   --semgrep semgrep-report.json \
   --gitleaks gitleaks-report.json \
