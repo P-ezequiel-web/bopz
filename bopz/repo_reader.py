@@ -23,7 +23,7 @@ def open_repo(repo: str, branch: str | None = None):
     """Context manager que devuelve la ruta local al código fuente.
 
     Uso:
-        with open_repo("https://github.com/user/shopmart") as path:
+        with open_repo("https://github.com/user/repo") as path:
             # path es un directorio temporal con el código clonado
     """
     if not is_github_url(repo):
