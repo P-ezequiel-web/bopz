@@ -1,6 +1,6 @@
 """Orquestador central de BopZ.
 
-Separa claramente tres fases:
+Separa tres fases:
   1. Reconocimiento (crawler)
   2. Checks paralelos por módulo (cada check es independiente)
   3. Enriquecimiento con IA (opcional, solo si hay API key)
@@ -117,7 +117,7 @@ def run_scan(config: ScanConfig,
         except Exception as exc:
             log(f"         ↳ Error en {check.name}: {exc}")
 
-    # ── 3. Cruce con pipeline de Semana 2 ─────────────────────────────────
+    # ── 3. Cruce con reportes de pipeline ─────────────────────────────────
     from bopz.report import merge_pipeline_reports
     coverage_rows = merge_pipeline_reports(
         all_findings,
