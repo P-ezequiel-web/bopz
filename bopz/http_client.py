@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 import requests
 
-USER_AGENT = "BopZ-Scanner/1.0 (+https://github.com/zequi/bopz; pentest-lab-tool)"
+USER_AGENT = "BopZ-Scanner/1.0 (+https://github.com/P-ezequiel-web/bopz; pentest-lab-tool)"
 
 
 class BopzSession:
