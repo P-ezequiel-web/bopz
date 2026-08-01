@@ -1,10 +1,5 @@
 """Generación de reportes: HTML autocontenido, Markdown y JSON crudo.
 
-Incluye un cruce best-effort contra los reportes de Semgrep/Trivy/Gitleaks
-del pipeline de la Semana 2: si el usuario pasa esos JSON, se hace un
-match heurístico por CWE/palabra clave para poblar automáticamente la
-tabla "¿el pipeline lo detectó?" — el argumento central de todo el
-proyecto (automatización vs. pentesting manual) queda armado solo.
 """
 from __future__ import annotations
 
