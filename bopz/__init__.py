@@ -16,6 +16,6 @@ explícita (tu propio laboratorio, un entorno de staging, o un engagement
 de pentesting formalmente autorizado). Ver README.md.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.2"
 __author__ = "Zequi"
 __all__ = ["__version__"]
