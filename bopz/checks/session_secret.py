@@ -1,10 +1,5 @@
 """Secret key débil de Flask -> cookies de sesión forjables.
 
-Esto es exactamente lo que un SAST NO puede ver desde el análisis
-estático del código si la clave se carga en runtime, y lo que un DAST
-"tonto" tampoco ve si solo mira status codes: hay que descifrar la firma
-de la cookie para probar que la sesión es forjable.
-
 Reutiliza las clases del propio Flask (`SecureCookieSessionInterface`)
 en vez de reimplementar a mano el esquema de firma de itsdangerous, así
 la lógica queda correcta sin importar la versión de Flask instalada.
