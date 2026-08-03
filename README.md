@@ -8,14 +8,14 @@
 
 ### Opción A — Python directo
 ```bash
-git clone https://github.com/zequi/bopz.git
+git clone https://github.com/P-ezequiel-web/bopz.git
 cd bopz
 pip install -r requirements.txt
 ```
 
 ### Opción B — Docker (recomendado, zero configuración)
 ```bash
-git clone https://github.com/zequi/bopz.git
+git clone https://github.com/P-ezequiel-web/bopz.git
 cd bopz
 docker build -t bopz .
 ```
