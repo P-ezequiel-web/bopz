@@ -7,7 +7,7 @@ x-bopz-env: &bopz-env
 
 services:
 
-  # ── Objetivo de demo: ShopMart (tu app vulnerable) ───────────────────────
+  # ── Objetivo de demo: ShopMart ────────────────────────────────────────────
   # Sustituye la imagen por la tuya o elimina este servicio si ya tienes
   # la app corriendo en el host (http://host.docker.internal:5001)
   shopmart:
